@@ -1,7 +1,10 @@
 <?php
 
 use App\Events\UserEvent;
+use App\Http\Controllers\LoginController;
+use App\Http\Middleware\HomeRedirect;
 use Illuminate\Support\Facades\Route;
+use PhpParser\Node\Stmt\Return_;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,18 +16,34 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::middleware(['login'])->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('home');
 
-Route::get('/', function () {
-    return view('welcome');
+    Route::get('/logout', function () {
+        session()->flush();
+        return redirect()->route('login')->with('success', 'Logout successful!');
+    });
 });
 
-Route::get('/register', function() {
-    return view('register');
-});
+// Route::middleware((['nologin'])->group(function () {
 
-Route::post('/register', function() {
-    $name = request()->name;
-    
-    event(new UserEvent($name));
-    
-});
+    Route::get('/register', function() {
+        return view('register');
+    });
+
+    Route::get('/login', function () {
+        Return view('login');
+    })->name('login')->middleware('nologin');
+// }));
+
+
+// Route::post('/register', function() {
+//     $name = request()->name;
+//     event(new UserEvent($name));
+// });
+Route::post('/register', [LoginController::class,'Register']);
+
+Route::post('/login',[LoginController::class, 'Login']);
+

@@ -1,6 +1,5 @@
 <?php
-
-use App\Events\UserEvent;
+use App\Http\Controllers\PusherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,17 +13,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     // return view('welcome');
+//     // echo "hoii";
+// });
 
-Route::get('/register', function() {
-    return view('register');
-});
+// Route::get('/register', function() {
+//     return view('register');
+// });
 
-Route::post('/register', function() {
-    $name = request()->name;
+// Route::post('/register', function() {
+//     $name = request()->name;
     
-    event(new UserEvent($name));
+//     event(new UserEvent($name));
     
-});
+// });
+
+// Route::get('/1',[PusherController::class,'index']);
+// Route::get('/receive','PusherController@receive'); 
+
+Route::get('/', 'App\Http\Controllers\PusherController@index');
+Route::post('/broadcast',[PusherController::class, 'broadcast']);
+// Route::post('/broadcast', 'App\Http\Controllers\PusherController@broadcast');
+Route::post('/receive', [PusherController::class, 'receive']);
